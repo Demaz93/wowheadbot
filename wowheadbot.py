@@ -1,8 +1,7 @@
 import urllib
 import json
-import re
-from bs4 import BeautifulSoup
-
+from mylib.manage_json import *
+from mylib.link_gen import *
 
 stringa = "savage blood"
 #sistemo la stringa in modo che venga accettata dalla query
@@ -22,44 +21,13 @@ while line:
     if "popTop10" not in line: continue
     else:
         break
+        
+json_string = cut_json(line)
+json_ok = fix_quotes(json_string)
 
-#aggiusto la stringa in modo che venga riconosciuta correttamente come json
-json_string = line[15:-2]
-json_string2 = json_string.replace("\'","\"")
-json_string3 = json_string2.replace("\"s ","\'s ")
-json_string4 = json_string3.replace("searchpopularity","\"searchpopularity\"")
-json_string5 = json_string4.replace("undefined","\"undefined\"")
+json_data = json.loads(json_ok)
 
-print json_string5
+id_obj = get_id(json_data)
+id_type = get_idtype(json_data)
 
-json_data = json.loads(json_string5)
-
-#print json.dumps(json_data['wowhead'],indent=6,sort_keys=True)
-#print json_data['wowhead']
-
-#prendo il tipo e l'id del primo risultato
-tipo = json_data['wowhead'][0]['type']
-id_obj = json_data['wowhead'][0]['lvjson']['id']
-
-if tipo == 1:
-    print "http://www.wowhead.com/npc=" + str(id_obj)
-elif tipo == 2:
-    print "boh 2"
-elif tipo == 3:
-    print "http://www.wowhead.com/item=" + str(id_obj)
-elif tipo == 4:
-    print "boh 4"
-elif tipo == 5:
-    print "http://www.wowhead.com/quest=" + str(id_obj)
-elif tipo == 6:
-    print "http://www.wowhead.com/spell=" + str(id_obj)
-elif tipo == 21:
-    print "http://www.wowhead.com/follower=" + str(id_obj)
-else:
-    print "errore" + str(tipo)
-
-
-
-#npc = 1
-#item = 3
-#spell = 6
+print get_link(id_type, id_obj)
