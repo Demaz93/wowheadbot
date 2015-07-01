@@ -1,7 +1,7 @@
 import urllib
 import json
-from mylib.manage_json import *
-from mylib.link_gen import *
+import mylib.manage_json
+import mylib.link_gen
 
 stringa = "savage blood"
 #sistemo la stringa in modo che venga accettata dalla query
@@ -22,12 +22,12 @@ while line:
     else:
         break
         
-json_string = cut_json(line)
-json_ok = fix_quotes(json_string)
+json_string = mylib.manage_json.cut_json(line)
+json_ok = mylib.manage_json.fix_quotes(json_string)
 
 json_data = json.loads(json_ok)
 
-id_obj = get_id(json_data)
-id_type = get_idtype(json_data)
+id_obj = mylib.link_gen.get_id(json_data)
+id_type = mylib.link_gen.get_idtype(json_data)
 
-print get_link(id_type, id_obj)
+print mylib.link_gen.get_link(id_type, id_obj)
