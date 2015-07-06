@@ -1,1 +1,6 @@
 /key.token
+last_id
+.idea/
+temp.txt
+wowhead_response.html
+*.pyc
