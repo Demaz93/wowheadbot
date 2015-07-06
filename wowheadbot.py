@@ -1,33 +1,41 @@
-import urllib
+import urllib.request as urlr
 import json
-import mylib.manage_json
-import mylib.link_gen
+import mylib.manage_json as mj
+import mylib.link_gen as lg
 
-stringa = "savage blood"
-#sistemo la stringa in modo che venga accettata dalla query
-#sostituendo gli spazzi con il +
 
-stringa_form = stringa.replace(" ","+")
+def cerca(stringa):
+    stringa_form = stringa.replace(" ","+")
 
-#costruisco l'url corretto e richiedo la pagina
-url = "http://www.wowhead.com/search?q=" + stringa_form
-urlok = urllib.urlopen(url)
-
-#faccio la scansione della pagina fino a trovare la variabile
-#che contiene il json con i risultati della query
-line = urlok.readline()
-while line:
+    #costruisco l'url corretto e richiedo la pagina
+    url = "http://www.wowhead.com/search?q=" + stringa_form
+    urlok = urlr.urlopen(url)
+    f = open ("temp.txt", "w")
+    #faccio la scansione della pagina fino a trovare la variabile
+    #che contiene il json con i risultati della query
     line = urlok.readline()
-    if "popTop10" not in line: continue
-    else:
-        break
-        
-json_string = mylib.manage_json.cut_json(line)
-json_ok = mylib.manage_json.fix_quotes(json_string)
 
-json_data = json.loads(json_ok)
+    while line:
+        line = urlok.readline().decode('utf8')
+        f.write(line)
+        if "popTop10" in line:
+            search_type = "list"
+            break
+        elif '<meta property="og&#x3A;url" content="http&#x3A;&#x2F;&#x2F;www.wowhead.com&#x2F;' in line:
+            search_type = "direct"
+            break
+        else:
+            return "Oggetto non trovato"
 
-id_obj = mylib.link_gen.get_id(json_data)
-id_type = mylib.link_gen.get_idtype(json_data)
+    json_string = mj.cut_json(line,search_type)
 
-print mylib.link_gen.get_link(id_type, id_obj)
+    if search_type == "direct":
+        return json_string
+    elif search_type == "list":
+        json_ok = mj.fix_quotes(json_string)
+        json_data = json.loads(json_ok)
+
+        id_obj = lg.get_id(json_data)
+        id_type = lg.get_idtype(json_data)
+        return lg.get_link(id_type, id_obj)
+
