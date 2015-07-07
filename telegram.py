@@ -23,12 +23,14 @@ def main():
 def extract_token(filename):
     t = open(filename, "r")
     token = t.readline()
+    print("token is %s" % token)
     return token
 
 
 def check_for_updates(token):
     with open("last_id", "r") as f:
         last_id = f.readline()
+        print("last request id is %s" % last_id)
 
     while True:
         time.sleep(2)  # non riempire di richieste il server
@@ -54,9 +56,12 @@ def check_for_updates(token):
                     print (send_message_request)
                     requests.post(send_message_request)
 
-            last_id = json_data['result'][len(json_data['result']) - 1]['update_id']
-            with open("last_id", "w") as f:
-                f.write(str(last_id))
+            try:
+                last_id = json_data['result'][len(json_data['result']) - 1]['update_id']
+                with open("last_id", "w") as f:
+                    f.write(str(last_id))
+            except IndexError as e:
+                print(e)
 
 
 if __name__ == '__main__':
