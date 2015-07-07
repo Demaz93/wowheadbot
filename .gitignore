@@ -4,3 +4,4 @@ last_id
 temp.txt
 wowhead_response.html
 *.pyc
+*.json
