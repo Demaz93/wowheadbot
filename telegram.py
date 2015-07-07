@@ -14,8 +14,8 @@ def main():
 
     if get_updates_response.status_code is 200:
         json_data = json.loads(get_updates_response.text)
-        json.dump(json_data, sys.stdout, sort_keys=True, indent=4, separators=(',', ': '))
-        print(json_data)
+        json.dump(json_data, sys.stdout, indent=4, separators=(',', ': '))
+        print('\n')
         get_updates_response.close()  # non usare piu' get_updates_response
         check_for_updates(token)
 
@@ -35,17 +35,21 @@ def check_for_updates(token):
     while True:
         time.sleep(2)  # non riempire di richieste il server
         get_updates_request = "https://api.telegram.org/bot" + token + "/getupdates?offset=" + str(last_id)
-        json_data = json.loads(requests.get(get_updates_request).text)
+        get_updates_response = requests.get(get_updates_request)
+        json_data = json.loads(get_updates_response.text)
+        get_updates_response.close()
 
         if len(json_data['result']) != 1 and mj.message_ok(json_data):
+            json.dump(json_data, sys.stdout, indent=4, separators=(',', ': '))
+            print('\n')
             for i in range(1, len(json_data['result'])):
                 if "/wowhead" in json_data['result'][i]['message']['text']:
-                    comando = json_data['result'][i]['message']['text']
-                    ssearch = comando.replace("/wowhead ", "")
+                    command = json_data['result'][i]['message']['text']
+                    search_string = command.replace("/wowhead ", "")
 
                     chat_id = json_data['result'][i]['message']['chat']['id']
                     try:
-                        message = bot.cerca(ssearch)
+                        message = bot.search(search_string)
                     except Exception as e:
                         message = "exception '%s'" % e.message
                         traceback.print_exc()
@@ -54,7 +58,8 @@ def check_for_updates(token):
                         chat_id) + "&text=" + message
 
                     print (send_message_request)
-                    requests.post(send_message_request)
+                    message_post = requests.post(send_message_request)
+                    message_post.close()
 
             try:
                 last_id = json_data['result'][len(json_data['result']) - 1]['update_id']

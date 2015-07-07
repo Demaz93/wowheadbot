@@ -1,19 +1,20 @@
 import json
 import re
 
+
 def rep(sjson):
-    sjson.replace("\"","\'")
+    sjson.replace("\"", "\'")
 
 
 def fix_quotes(sjson):
-    sjson_hard_replace = sjson.replace("\'", "\"")
-    sjson_fix_replace = sjson_hard_replace.replace("\"s ", "\'s ")
-    sjson_add_quotes = sjson_fix_replace.replace("searchpopularity", "\"searchpopularity\"")
-    sjson_add_quotes2 = sjson_add_quotes.replace("undefined", "\"undefined\"")
-    sjson_fix_apice = re.sub("\w\"[\w\s]",rep,sjson_add_quotes2)
-    
-    sjson_ok = sjson_fix_apice
-    return sjson_ok
+    sjson = sjson.replace("\'wowhead\'", "\"wowhead\"") \
+        .replace("\'type\'", "\"type\"") \
+        .replace("\'typeId\'", "\"typeId\"") \
+        .replace("\'lvjson\'", "\"lvjson\"") \
+        .replace("searchpopularity", "\"searchpopularity\"") \
+        .replace("\'hearthstone\'", "\"hearthstone\"") \
+        .replace("undefined", "\"undefined\"")
+    return sjson
 
 
 def cut_json(sjson, stype):

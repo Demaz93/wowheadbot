@@ -2,14 +2,15 @@ import requests
 import json
 import mylib.manage_json as mj
 import mylib.link_gen as lg
+import sys
 
 
-def cerca(stringa):
-    print("searching for '%s'..." % stringa)
-    stringa_form = stringa.replace(" ", "+")
+def search(string):
+    print("searching for '%s'..." % string)
+    string_form = string.replace(" ", "+")
 
     #costruisco l'url corretto e richiedo la pagina
-    url = "http://www.wowhead.com/search?q=" + stringa_form
+    url = "http://www.wowhead.com/search?q=" + string_form
     print("search url is '%s'" % url)
     wowhead_search_result_response = requests.get(url)
     #faccio la scansione della pagina fino a trovare la variabile
@@ -39,7 +40,12 @@ def cerca(stringa):
         return json_string
     elif search_type == "list":
         json_ok = mj.fix_quotes(json_string)
+        json_dump_filename = "wowhead_response_" + string_form + ".json"
+        with open(json_dump_filename, "w") as f:
+            f.write(json_ok)
         json_data = json.loads(json_ok)
+
+        #json.dump(json_data, sys.stdout, sort_keys=True, indent=4, separators=(',', ': '))
 
         id_obj = lg.get_id(json_data)
         id_type = lg.get_idtype(json_data)
