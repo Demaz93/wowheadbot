@@ -9,20 +9,26 @@ def get_id(json_data, num_list=0):
     return id
 
 def get_link(id_type, id_obj):
-    wowhead_url = "http://www.wowhead.com"
-    if id_type == 1:    #npc
-        link = wowhead_url + "/npc=" + str(id_obj)
-    elif id_type == 3:  #item
-        link = wowhead_url + "/item=" + str(id_obj)
-    elif id_type == 5:  #quest
-        link = wowhead_url + "/quest=" + str(id_obj)
-    elif id_type == 6:  #spell
-        link = wowhead_url + "/spell=" + str(id_obj)
-    elif id_type is 7:  #zone
-        link = wowhead_url + "/zone=" + str(id_obj)
-    elif id_type == 21: #follower
-        link = wowhead_url + "/follower=" + str(id_obj)
-    else:
-        link = "error" + str(id_type)
-    print("get_link %s" % link)
-    return link
+	wowhead_url = "http://www.wowhead.com"
+	if id_type == 1:    #npc
+		link = wowhead_url + "/npc=" + str(id_obj)
+	elif id_type == 3:  #item
+		link = wowhead_url + "/item=" + str(id_obj)
+	elif id_type == 5:  #quest
+		link = wowhead_url + "/quest=" + str(id_obj)
+	elif id_type == 6:  #spell
+		link = wowhead_url + "/spell=" + str(id_obj)
+	elif id_type == 7:  #zone
+		link = wowhead_url + "/zone=" + str(id_obj)
+	elif id_type == 10: #title
+		link = wowhead_url + "/achievement=" + str(id_obj)
+	elif id_type == 11: #title
+		link = wowhead_url + "/title=" + str(id_obj)
+	elif id_type == 21: #follower
+		link = wowhead_url + "/follower=" + str(id_obj)
+	elif id_type == 101: #transmo-set
+		link = wowhead_url + "/transmog-set=" + str(id_obj)
+	else:
+		link = "error" + str(id_type)
+	print("get_link %s" % link)
+	return link
