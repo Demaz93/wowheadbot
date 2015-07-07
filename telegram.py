@@ -6,7 +6,7 @@ import json
 import mylib.manage_json as mj
 import wowheadbot as bot
 import time
-
+import traceback
 
 def main():
     token = extract_token("key.token")
@@ -42,7 +42,12 @@ def check_for_updates(token):
                     ssearch = comando.replace("/wowhead ", "")
 
                     chat_id = json_data['result'][i]['message']['chat']['id']
-                    message = bot.cerca(ssearch)
+                    try:
+                        message = bot.cerca(ssearch)
+                    except Exception as e:
+                        message = "exception '%s'" % e.message
+                        traceback.print_exc()
+
                     send_message_request = "https://api.telegram.org/bot" + token + "/sendmessage?chat_id=" + str(
                         chat_id) + "&text=" + message
 
