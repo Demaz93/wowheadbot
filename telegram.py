@@ -1,13 +1,13 @@
 __author__ = 'Matteo De Marie'
 
-import sys
-import requests
-import json
-import mylib.manage_json as mj
-import wowheadbot as bot
-import time
 import traceback
+
 import telebot
+
+import wowheadbot as bot
+
+
+tb = None
 
 
 def extract_token(filename):
@@ -18,15 +18,13 @@ def extract_token(filename):
 
 
 def listener(*messages):
-    """
-    When new messages arrive TeleBot will call this function.
-    """
+    # When new messages arrive TeleBot will call this function.
     for m in messages:
-        chatid = m.chat.id
-        if m.content_type == 'text':
-            text = m.text
-            search_result = search_wowhead(text)
-            tb.send_message(chatid, search_result)
+        msg = m[0]  # dio can, coglione di telebot
+        chat_id = msg.chat.id
+        if msg.content_type == 'text':
+            search_result = search_wowhead(msg.text)
+            tb.send_message(chat_id, search_result)
 
 
 def search_wowhead(search_string):
@@ -39,13 +37,16 @@ def search_wowhead(search_string):
     return message
 
 
-token = extract_token("key.token")
-tb = telebot.TeleBot(token)
-tb.set_update_listener(listener)
-tb.polling()
+def main():
+    token = extract_token("key.token")
+    global tb
+    tb = telebot.TeleBot(token)
+    tb.set_update_listener(listener)
+    tb.polling()
 
-while True:
-    pass
+    while True:
+        pass
 
-#if __name__ == '__main__':
-    #main()
+
+if __name__ == '__main__':
+    main()
